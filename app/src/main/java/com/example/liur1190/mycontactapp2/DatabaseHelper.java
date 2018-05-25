@@ -2,13 +2,14 @@ package com.example.liur1190.mycontactapp2;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Contact2018.db";
     public static final String TABLE_NAME = "Contact2018_table";
     public static final String ID = "ID";
@@ -62,6 +63,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Log.d("MyContactApp", "Databasehelper: Contact insert - PASSED");
             return true;
         }
+    }
+    public Cursor getAllData(){
+        Log.d("MyContactApp", "Databasehelper: calling getAllData method");
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from " + TABLE_NAME, null);
+        return res;
+
     }
 
 }
