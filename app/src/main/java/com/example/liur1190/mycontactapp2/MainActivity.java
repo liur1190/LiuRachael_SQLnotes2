@@ -1,5 +1,7 @@
 package com.example.liur1190.mycontactapp2;
 
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -63,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
     }
     public void showMessage(String title, String message){
         Log.d("MyContactApp", "MainActivity: showMessage: building alert dialog");
@@ -74,5 +78,43 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
 
     }
+    public static final String EXTRA_MESSAGE = "com.example.liur1190.mycontactapp2.MESSAGE";
+    public void SearchRecord(View view){
+        Log.d("MyContactApp", "MainActivity: launching SearchActivity");
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, editName.getText().toString());
+        startActivity(intent);
 
+    }
+
+    public void search (View view)
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, buffer.toString());
+        Cursor res = myDb.getAllData();
+        Context context = getApplicationContext();
+
+        if(res.getCount()==0)
+        {
+            showMessage("Error", "No data found in database");
+            return;
+        }
+        while(res.moveToNext())
+        {
+            if(res.getString(1).toUpperCase().equals(editName.getText().toString().toUpperCase()))
+            {
+                for(int i = 0; i<res.getColumnCount();i++)
+                {
+                    buffer.append(res.getColumnName(i)+": "+res.getString(i)+"\n");
+                }
+                showMessage("Contact", buffer.toString());
+            }
+            else
+            {
+                showMessage("Contact not found", "Check your spelling");
+            }
+        }
+    }
 }
