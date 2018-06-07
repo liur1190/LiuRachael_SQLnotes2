@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         editPhone = findViewById(R.id.editText_phone);
         editAddress = findViewById(R.id.editText_address);
 
+
         myDb = new DatabaseHelper(this);
         Log.d("MyContactApp", "MainActivity: instantiated DatabaseHelper");
 
@@ -79,42 +80,41 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public static final String EXTRA_MESSAGE = "com.example.liur1190.mycontactapp2.MESSAGE";
-    public void SearchRecord(View view){
+
+
+
+    public void searchRecord(View view){
         Log.d("MyContactApp", "MainActivity: launching SearchActivity");
         Intent intent = new Intent(this, SearchActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, editName.getText().toString());
-        startActivity(intent);
 
-    }
-
-    public void search (View view)
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        Intent intent = new Intent(this, SearchActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, buffer.toString());
+        //creating the StringBuffer to search
         Cursor res = myDb.getAllData();
-        Context context = getApplicationContext();
+        Log.d("MyContactApp", "MainActivity: SearchRecord: received cursor");
 
-        if(res.getCount()==0)
-        {
+        if (res.getCount() == 0){
             showMessage("Error", "No data found in database");
+            Log.d("MyContactApp", "MainActivity: SearchRecord: no data in database");
             return;
         }
-        while(res.moveToNext())
-        {
-            if(res.getString(1).toUpperCase().equals(editName.getText().toString().toUpperCase()))
-            {
-                for(int i = 0; i<res.getColumnCount();i++)
-                {
-                    buffer.append(res.getColumnName(i)+": "+res.getString(i)+"\n");
-                }
-                showMessage("Contact", buffer.toString());
-            }
-            else
-            {
-                showMessage("Contact not found", "Check your spelling");
+
+        StringBuffer buffer1 = new StringBuffer();
+
+        boolean isTrue = false;
+        while (res.moveToNext()) {
+            if (res.getString(1).equals(editName.getText().toString())) {
+                isTrue = true;
+                buffer1.append(res.getString(1) + "\n");
+                buffer1.append(res.getString(2) + "\n");
+                buffer1.append(res.getString(3) + "\n" + "\n");
             }
         }
+        if (isTrue == false){
+            buffer1.append("Entry does not exist");
+        }
+
+        Log.d("MyContactApp", "MainActivity: SearchRecord: created StringBuffer");
+
+        intent.putExtra(EXTRA_MESSAGE, buffer1.toString());
+        startActivity(intent);
     }
 }
